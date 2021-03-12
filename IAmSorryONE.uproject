@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6e4221381d6d3a1ef0e8bed85898006e990f668cef20a1e29f06e3707bd6ff05
-size 203
+{
+	"FileVersion": 3,
+	"EngineAssociation": "4.26",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "IAmSorryONE",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "MultiUserClient",
+			"Enabled": true
+		}
+	]
+}
