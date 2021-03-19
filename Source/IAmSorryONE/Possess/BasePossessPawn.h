@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 
 #include "Camera/CameraComponent.h"
+#include "Components/SphereComponent.h"
 
 #include "BasePossessPawn.generated.h"
 
@@ -34,12 +35,6 @@ public:
 	void Move_XAxis(float AxisValue);
 	void Move_YAxis(float AxisValue);
 	void Possess();
-
-
-	
-
-	// Input variables
-	FVector CurrentVelocity;
 	
 	//Scene Components haben nixo physixo
 	UPROPERTY(EditAnywhere)
@@ -52,6 +47,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		UCameraComponent* camera;
 
-	UFUNCTION(BlueprintCallable)
-	void SetPhysicsRoot();
+	UPROPERTY(EditAnywhere)
+		FVector RelativeToBall = FVector(-500, 0, 600);
+
+	UPROPERTY(EditAnywhere)
+		USphereComponent* SphereCollision;
 };

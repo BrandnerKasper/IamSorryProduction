@@ -12,41 +12,37 @@ ABasePossessPawn::ABasePossessPawn()
 	// Set this pawn to be controlled by the lowest-numbered player
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
+	//Init Mesh
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OurVisibleComponent"));
-	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("OurCamera"));
-	// Attach our camera and visible object to our root component. Offset and rotate the camera.
-	camera->SetRelativeLocation(FVector(0, 0, 0));
-	camera->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
-	SetPhysicsRoot();
-
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Engine/EditorMeshes/EditorSphere.EditorSphere'"));
 	mesh->SetStaticMesh(MeshAsset.Object);
 	mesh->SetWorldScale3D(FVector(0.5, 0.5, 0.5));
 	mesh->SetSimulatePhysics(true);
+
+	//Init Camera
+	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("OurCamera"));
+	camera->SetRelativeLocation(RelativeToBall);
+	camera->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
+	camera->AttachTo(mesh);
+	camera->SetFieldOfView(120);
+	camera->SetAbsolute(false, true, false);
+
+	//Init Collision
+	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collusion"));
+	SphereCollision->InitSphereRadius(400.f);
+	SphereCollision->AttachTo(mesh);
 }
 
 // Called when the game starts or when spawned
 void ABasePossessPawn::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame
 void ABasePossessPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	// Handle movement based on our "MoveX" and "MoveY" axes
-	{
-		if (!CurrentVelocity.IsZero())
-		{
-			FVector NewLocation = GetActorLocation() + (CurrentVelocity * DeltaTime);
-			SetActorLocation(NewLocation);
-		}
-
-	}
-
 }
 
 // Called to bind functionality to input
@@ -62,29 +58,29 @@ void ABasePossessPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	InputComponent->BindAxis("MoveY", this, &ABasePossessPawn::Move_YAxis);
 }
 
+
+
 void ABasePossessPawn::Move_XAxis(float AxisValue)
 {
-	rootWithPhysics->AddForce(FVector(1, 0, 0) * AxisValue * 100000.0f);
-	camera->SetWorldLocation(rootWithPhysics->GetComponentTransform().GetLocation() + FVector(-250,0,250));
+	mesh->AddForce(FVector(1, 0, 0) * AxisValue * 100000.0f);
+	camera->SetWorldLocation(mesh->GetComponentTransform().GetLocation() + RelativeToBall);
 }
 
 void ABasePossessPawn::Move_YAxis(float AxisValue)
 {
-	rootWithPhysics->AddForce(FVector(0,1,0) * AxisValue* 100000.0f);
-	camera->SetWorldLocation(rootWithPhysics->GetComponentTransform().GetLocation() + FVector(-250, 0, 250));
+	mesh->AddForce(FVector(0,1,0) * AxisValue* 100000.0f);
+	camera->SetWorldLocation(mesh->GetComponentTransform().GetLocation() + RelativeToBall);
 }
 
 void ABasePossessPawn::Possess()
 {
-
-}
-
-
-void ABasePossessPawn::SetPhysicsRoot()
-{
-	TArray<UPrimitiveComponent*> Comps;
-	GetComponents(Comps);
-	rootWithPhysics = (Comps[0]);
-	this->GetComponentByClass(StaticClass());
+	UE_LOG(LogTemp, Warning, TEXT("Possed"));
+	TArray<AActor*> pawnys;
+	GetOverlappingActors(pawnys, ABasePossessPawn::StaticClass());
+	if (pawnys.Num() != 0)
+	{
+		APawn* pawny = Cast<APawn>(pawnys[0]);
+		Controller->Possess(pawny);
+	}
 }
 
