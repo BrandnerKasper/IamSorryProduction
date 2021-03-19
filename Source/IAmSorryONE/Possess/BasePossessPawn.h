@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+
+#include "Camera/CameraComponent.h"
+
 #include "BasePossessPawn.generated.h"
+
 
 UCLASS()
 class IAMSORRYONE_API ABasePossessPawn : public APawn
@@ -19,7 +23,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -31,11 +35,23 @@ public:
 	void Move_YAxis(float AxisValue);
 	void Possess();
 
+
+	
+
 	// Input variables
 	FVector CurrentVelocity;
+	
+	//Scene Components haben nixo physixo
+	UPROPERTY(EditAnywhere)
+		USceneComponent* mesh;
+	
+	//Primitive Component ist das "oberste" component in der Vererbungshierarchie mit Physics SKILLSSZZZ
+	UPROPERTY(EditAnywhere)
+		UPrimitiveComponent* rootWithPhysics;
 
 	UPROPERTY(EditAnywhere)
-	USceneComponent* mesh;
-	UPROPERTY(EditAnywhere)
-	UCameraComponent* camera;
+		UCameraComponent* camera;
+
+	UFUNCTION(BlueprintCallable)
+	void SetPhysicsRoot();
 };

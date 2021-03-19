@@ -6,7 +6,7 @@
 // Sets default values
 ABasePossessPawn::ABasePossessPawn()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Set this pawn to be controlled by the lowest-numbered player
@@ -14,7 +14,7 @@ ABasePossessPawn::ABasePossessPawn()
 
 	// Create a dummy root component we can attach things to.
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-	// Create a camera and a visible object
+	//Create a camera and a visible object
 	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("OurCamera"));
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OurVisibleComponent"));
 	// Attach our camera and visible object to our root component. Offset and rotate the camera.
@@ -28,7 +28,7 @@ ABasePossessPawn::ABasePossessPawn()
 void ABasePossessPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -70,17 +70,22 @@ void ABasePossessPawn::Move_XAxis(float AxisValue)
 void ABasePossessPawn::Move_YAxis(float AxisValue)
 {
 
-	//mesh->AddForce(GetActorForwardVector() * 200.0f);
+	rootWithPhysics->AddForce(GetActorForwardVector() * AxisValue* 100000.0f);
 	
-	//TArray<UStaticMeshComponent> StaticComps;
-	//auto mesh = GetComponents<UStaticMeshComponent>(StaticComps);
-	
-	
-	//mesh.AddForce(AxisValue*100000,nullptr,false);
 }
 
 void ABasePossessPawn::Possess()
 {
+
+}
+
+
+void ABasePossessPawn::SetPhysicsRoot()
+{
+	TArray<UPrimitiveComponent*> Comps;
+	GetComponents(Comps);
+	rootWithPhysics = (Comps[0]);
+	this->GetComponentByClass(StaticClass());
 
 }
 
