@@ -12,16 +12,17 @@ ABasePossessPawn::ABasePossessPawn()
 	// Set this pawn to be controlled by the lowest-numbered player
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
-	// Create a dummy root component we can attach things to.
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-	//Create a camera and a visible object
-	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("OurCamera"));
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OurVisibleComponent"));
+	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("OurCamera"));
 	// Attach our camera and visible object to our root component. Offset and rotate the camera.
-	camera->SetupAttachment(RootComponent);
-	camera->SetRelativeLocation(FVector(-250.0f, 0.0f, 250.0f));
+	camera->SetRelativeLocation(FVector(0, 0, 0));
 	camera->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
-	mesh->SetupAttachment(RootComponent);
+	SetPhysicsRoot();
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Engine/EditorMeshes/EditorSphere.EditorSphere'"));
+	mesh->SetStaticMesh(MeshAsset.Object);
+	mesh->SetWorldScale3D(FVector(0.5, 0.5, 0.5));
+	mesh->SetSimulatePhysics(true);
 }
 
 // Called when the game starts or when spawned
@@ -43,6 +44,7 @@ void ABasePossessPawn::Tick(float DeltaTime)
 			FVector NewLocation = GetActorLocation() + (CurrentVelocity * DeltaTime);
 			SetActorLocation(NewLocation);
 		}
+
 	}
 
 }
@@ -62,16 +64,14 @@ void ABasePossessPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void ABasePossessPawn::Move_XAxis(float AxisValue)
 {
-	// Move at 100 units per second forward or backward
-	CurrentVelocity.X = FMath::Clamp(AxisValue, -1.0f, 1.0f) * 10000.0f;
-
+	rootWithPhysics->AddForce(FVector(1, 0, 0) * AxisValue * 100000.0f);
+	camera->SetWorldLocation(rootWithPhysics->GetComponentTransform().GetLocation() + FVector(-250,0,250));
 }
 
 void ABasePossessPawn::Move_YAxis(float AxisValue)
 {
-
-	rootWithPhysics->AddForce(GetActorForwardVector() * AxisValue* 100000.0f);
-	
+	rootWithPhysics->AddForce(FVector(0,1,0) * AxisValue* 100000.0f);
+	camera->SetWorldLocation(rootWithPhysics->GetComponentTransform().GetLocation() + FVector(-250, 0, 250));
 }
 
 void ABasePossessPawn::Possess()
@@ -86,6 +86,5 @@ void ABasePossessPawn::SetPhysicsRoot()
 	GetComponents(Comps);
 	rootWithPhysics = (Comps[0]);
 	this->GetComponentByClass(StaticClass());
-
 }
 

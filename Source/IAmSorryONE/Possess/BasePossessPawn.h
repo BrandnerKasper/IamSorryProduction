@@ -43,7 +43,7 @@ public:
 	
 	//Scene Components haben nixo physixo
 	UPROPERTY(EditAnywhere)
-		USceneComponent* mesh;
+		UStaticMeshComponent* mesh;
 	
 	//Primitive Component ist das "oberste" component in der Vererbungshierarchie mit Physics SKILLSSZZZ
 	UPROPERTY(EditAnywhere)
