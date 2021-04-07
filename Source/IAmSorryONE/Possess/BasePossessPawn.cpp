@@ -76,7 +76,7 @@ void ABasePossessPawn::Possess()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Possed"));
 	TArray<AActor*> pawnys;
-	GetOverlappingActors(pawnys, ABasePossessPawn::StaticClass());
+	GetOverlappingActors(pawnys, APawn::StaticClass());
 	if (pawnys.Num() != 0)
 	{
 		APawn* pawny = Cast<APawn>(pawnys[0]);
