@@ -2,6 +2,8 @@
 
 
 #include "BasePossessPawn.h"
+#include "Camera/CameraComponent.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 ABasePossessPawn::ABasePossessPawn()

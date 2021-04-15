@@ -5,11 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 
-#include "Camera/CameraComponent.h"
-#include "Components/SphereComponent.h"
-
 #include "BasePossessPawn.generated.h"
 
+
+class UCameraComponent;
+class USphereComponent;
 
 UCLASS()
 class IAMSORRYONE_API ABasePossessPawn : public APawn
